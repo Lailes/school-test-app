@@ -7,7 +7,7 @@ namespace WebApp
 {
     public class Startup
     {
-        // TODO 0: Something broken in ConfigureServices.
+        // TODO_ 0: Something broken in ConfigureServices.
         // Don't focus attention on it right now, you will faced with problem in process of meeting the challenges TODOs
         // Pay attention to different possible solutions of the problem
 
@@ -15,9 +15,10 @@ namespace WebApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddSingleton<IAccountDatabase, AccountDatabaseStub>();
             services.AddSingleton<IAccountCache, AccountCache>();
+            services.AddSingleton<IAccountService, AccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,7 +30,7 @@ namespace WebApp
             }
 
             app.UseMvc();
-            app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); });
+            // app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); });
         }
     }
 }
