@@ -193,21 +193,21 @@ public ValueTask<Account> GetByInternalId([FromRoute] int id)
 public Task<Account> GetOrCreateAccountAsync(string id)
 {
     ...
-        return Task.FromResult(account);
+        return Task.FromResult(account); // Было .FromResult(account.Clone());
     }
 }
 
 public Task<Account> GetOrCreateAccountAsync(long id)
 {
     ...
-        return Task.FromResult(account);
+        return Task.FromResult(account); // Было .FromResult(account.Clone());
     }
 }
 
 public Task<Account> FindByUserNameAsync(string userName)
 {
     ...
-        return Task.FromResult(account);
+        return Task.FromResult(account); // Было .FromResult(account.Clone());
     }
 }
 ```
