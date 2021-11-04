@@ -67,7 +67,7 @@ public async Task<IActionResult> Login(string userName) {
 }
 ```
 
-В случае если в результате поиска пользователя получили null, то возвращает код 404 с помощью метода NotFound()
+В случае, если в результате поиска пользователя получили null, то возвращает код 404 с помощью метода NotFound()
 ```c#
 return NotFound();
 ```
@@ -77,6 +77,45 @@ return Ok();
 ```
 
 ### 4) TODO 3
+
+Добавлено получение userId из куки.
+Данный метод будет улучшен в дальнейшем
+
+```c#
+[Authorize] 
+[HttpGet]
+public ValueTask<Account> Get()
+{
+    var userId = User.Claims
+        .Where(claim => claim.Type == ClaimTypes.Name)
+        .Select(claim => claim.Value)
+        .FirstOrDefault();
+
+    if (userId == null)
+        return new ValueTask<Account>(result: null);
+    
+    return _accountService.LoadOrCreateAsync(userId /* TODO 3: Get user id from cookie */);
+}
+```
+
 ### 5) TODO 4
+
+Было выснено, что неавторизованный пользователь, при обращении к защищенному контроллеру или действию, переходит на страницу, устанавливаемую свойством LoginPath. По умолчанию он не установлен, и при переходе выдается 404 Not Found
+
+В LoginPath был установлен путь, при переходе на который возвращается 401 Unauthorized
+```c#
+.AddCookie(options => {
+    options.LoginPath = "/api/denied";
+});
+```
+Создано действие в контроллере LoginController, возвращающее 401 Unauthorized при переходе на него
+
+```c#
+[HttpGet("denied")]
+public IActionResult AccessDenied() => Unauthorized();
+```
 ### 6) TODO 5
+
+
+
 ### 7) TODO 6

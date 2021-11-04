@@ -21,7 +21,9 @@ namespace WebApp
             services.AddSingleton<IAccountCache, AccountCache>();
             services.AddSingleton<IAccountService, AccountService>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+                .AddCookie(options => {
+                    options.LoginPath = "/api/denied";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
