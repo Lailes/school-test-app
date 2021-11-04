@@ -59,6 +59,23 @@ app.UseAuthorization();
 ```
 
 ### 3) TODO 2
+
+Изменена сигнатура метода, на возврат Task< IActionResult >
+```c#
+public async Task<IActionResult> Login(string userName) {
+...
+}
+```
+
+В случае если в результате поиска пользователя получили null, то возвращает код 404 с помощью метода NotFound()
+```c#
+return NotFound();
+```
+Если поиск вернул пользователя, то после добавление аутентификационных куки возвращаем код 200
+```c#
+return Ok();
+```
+
 ### 4) TODO 3
 ### 5) TODO 4
 ### 6) TODO 5

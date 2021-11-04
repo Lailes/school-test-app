@@ -18,12 +18,12 @@ namespace WebApp
         }
 
         [HttpPost("sign-in")]
-        public async Task Login(string userName)
+        public async Task<IActionResult> Login(string userName)
         {
             var account = await _db.FindByUserNameAsync(userName);
             if (account != null)
             {
-                //TODO 1: Generate auth cookie for user 'userName' with external id
+                //TODO_ 1: Generate auth cookie for user 'userName' with external id
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.NameIdentifier, account.UserName),
                     new Claim(ClaimTypes.Role, account.Role),
@@ -31,8 +31,10 @@ namespace WebApp
                 };
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
                 await HttpContext.SignInAsync(claimsPrincipal);
+                return Ok();
             }
-            //TODO 2: return 404 if user not found
+            //TODO_ 2: return 404 if user not found
+            return NotFound();
         }
     }
 }
