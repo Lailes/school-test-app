@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp
@@ -20,6 +24,13 @@ namespace WebApp
             if (account != null)
             {
                 //TODO 1: Generate auth cookie for user 'userName' with external id
+                var claims = new List<Claim> {
+                    new Claim(ClaimTypes.NameIdentifier, account.UserName),
+                    new Claim(ClaimTypes.Role, account.Role),
+                    new Claim(ClaimTypes.Name, account.ExternalId)
+                };
+                var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+                await HttpContext.SignInAsync(claimsPrincipal);
             }
             //TODO 2: return 404 if user not found
         }

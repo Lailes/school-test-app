@@ -33,6 +33,31 @@ app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); 
 ```
 
 ### 2) TODO 1
+
+Добавлена генерация аутентификационных куки в метод Login
+
+```c#
+var claims = new List<Claim> {
+    new Claim(ClaimTypes.NameIdentifier, account.UserName),
+    new Claim(ClaimTypes.Role, account.Role),
+    new Claim(ClaimTypes.Name, account.ExternalId)
+};
+var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+await HttpContext.SignInAsync(claimsPrincipal);
+```
+Зарегестрирована система аутентификации в методе ConfigureServices в классе Sturtup
+
+```c#
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+```
+Добавлена аутентификация и авторизация в конвейер обработки запросов
+
+```c#
+app.UseAuthentication();
+app.UseAuthorization();
+```
+
 ### 3) TODO 2
 ### 4) TODO 3
 ### 5) TODO 4
