@@ -19,7 +19,7 @@ namespace WebApp
 
         [Authorize] 
         [HttpGet]
-        public ValueTask<Account> Get()
+        public async ValueTask<ActionResult<Account>> Get()
         {
             var userId = User.Claims
                 .Where(claim => claim.Type == ClaimTypes.Name)
@@ -27,9 +27,10 @@ namespace WebApp
                 .FirstOrDefault();
 
             if (userId == null)
-                return new ValueTask<Account>(result: null);
-            
-            return _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
+                return NotFound();
+
+            var account = await _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
+            return new ActionResult<Account>(account);
         }
 
         //TODO_ 5: Endpoint should works only for users with "Admin" Role
@@ -45,8 +46,12 @@ namespace WebApp
         public async Task UpdateAccount()
         {
             //Update account in cache, don't bother saving to DB, this is not an objective of this task.
-            var account = await Get();
-            account.Counter++;
+            var actionResult = await Get();
+            if (actionResult.Result != NotFound())
+            {
+                var account = actionResult.Value;
+                account.Counter++;
+            }
         }
     }
 }
