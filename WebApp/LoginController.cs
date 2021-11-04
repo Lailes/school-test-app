@@ -17,7 +17,7 @@ namespace WebApp
             _db = db;
         }
 
-        [HttpPost("sign-in")]
+        [HttpPost("sign-in/{userName}")]
         public async Task<IActionResult> Login(string userName)
         {
             var account = await _db.FindByUserNameAsync(userName);
