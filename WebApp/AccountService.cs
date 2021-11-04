@@ -45,5 +45,14 @@ namespace WebApp
 
             return account;
         }
+
+        public async ValueTask<bool> SaveChanges(Account account)
+        {
+            var wasSaved = await _db.SaveChangesAsync(account);
+            if (wasSaved)
+                _cache.AddOrUpdate(account);
+            
+            return wasSaved;
+        }
     }
 }

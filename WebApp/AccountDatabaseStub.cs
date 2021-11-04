@@ -41,7 +41,7 @@ namespace WebApp
                     };
                     _accounts[id] = account;
                 }
-                return Task.FromResult(account);
+                return Task.FromResult(account?.Clone());
             }
         }
 
@@ -59,7 +59,7 @@ namespace WebApp
                     };
                     _accounts[account.ExternalId] = account;
                 }
-                return Task.FromResult(account);
+                return Task.FromResult(account?.Clone());
             }
         }
 
@@ -68,7 +68,20 @@ namespace WebApp
             lock (this)
             {
                 var account = _accounts.Values.FirstOrDefault(x => x.UserName == userName);
-                return Task.FromResult(account);
+                return Task.FromResult(account?.Clone());
+            }
+        }
+
+        public Task<bool> SaveChangesAsync(Account account)
+        {
+            lock (this)
+            {
+                if (_accounts.ContainsKey(account.ExternalId))
+                {
+                    _accounts[account.ExternalId] = account;
+                    return Task.FromResult(true);
+                }
+                return Task.FromResult(false);
             }
         }
 

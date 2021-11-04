@@ -10,6 +10,8 @@ namespace WebApp
 
         Task<Account> FindByUserNameAsync(string userName);
 
+        Task<bool> SaveChangesAsync(Account account);
+
         Task ResetAsync();
     }
 }

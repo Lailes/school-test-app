@@ -15,5 +15,7 @@ namespace WebApp
         ValueTask<Account> LoadOrCreateAsync(string id);
         
         ValueTask<Account> LoadOrCreateAsync(long id);
+
+        ValueTask<bool> SaveChanges(Account account);
     }
 }

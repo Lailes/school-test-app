@@ -78,8 +78,7 @@ return Ok();
 
 ### 4) TODO 3
 
-Добавлено получение userId из куки.
-Данный метод будет улучшен в дальнейшем
+Добавлено получение userId из куки
 
 ```c#
 [Authorize] 
@@ -162,27 +161,72 @@ public ValueTask<Account> GetByInternalId([FromRoute] int id)
 класса AccountDatabaseStub возвращает не объект, а его копию. Из-за чего действие увеличения Counter производится над копией. 
 Для решения данной проблемы надо либо возвращать оригинальный объект, либо сохранять объект (применять изменения) в базе данных
 
-Было принято решение возвращать оригинальный объект, из-за меньшего количества необходимых изменений в коде.
+Было принято решение реализовать методы ручного сохранения. 
+Данный способ, по моему мнению, даст больше гибкости в случае, если надо будет заменить реализацию IAccountDatabase с AccountDatabaseStub на реализацию, требующую "ручного" сохранения
 
+
+**Изменения в коде:**
+
+Изменения интерфейса:
 ```c#
-public Task<Account> GetOrCreateAccountAsync(string id)
+public interface IAccountDatabase
 {
     ...
-        return Task.FromResult(account);
+    
+    // Метод возвращает значение типа Task< bool > в зависимости от того, 
+    // произошло ли сохранение. 
+    // (Если записи с таким externalId не существует, то сохранение не происходит)
+    Task<bool> SaveChangesAsync(Account account);
+}
+```
+Реализация:
+```c#
+public Task<bool> SaveChangesAsync(Account account)
+{
+    lock (this)
+    {
+        if (_accounts.ContainsKey(account.ExternalId))
+        {
+            _accounts[account.ExternalId] = account;
+            return Task.FromResult(true);
+        }
+        return Task.FromResult(false);
     }
 }
-
-public Task<Account> GetOrCreateAccountAsync(long id)
+```
+Изменения интерфейса:
+```c#
+public interface IAccountService
 {
     ...
-        return Task.FromResult(account);
-    }
+    ValueTask<bool> SaveChanges(Account account);
 }
-
-public Task<Account> FindByUserNameAsync(string userName)
+```
+Реализация:
+```c#
+public async ValueTask<bool> SaveChanges(Account account)
 {
-    ...
-        return Task.FromResult(account);
+    var wasSaved = await _db.SaveChangesAsync(account);
+    if (wasSaved)
+        _cache.AddOrUpdate(account);
+    
+    return wasSaved;
+}
+```
+
+Итоговый код действия контроллера:
+```c#
+ [Authorize]
+[HttpPost("counter")]
+public async Task UpdateAccount()
+{
+    //Update account in cache, don't bother saving to DB, this is not an objective of this task.
+    var actionResult = await Get();
+    if (actionResult.Result != NotFound())
+    {
+        var account = actionResult.Value;
+        account.Counter++; 
+        await _accountService.SaveChanges(account);
     }
 }
 ```
