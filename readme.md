@@ -138,7 +138,7 @@ public async ValueTask<Account> GetFromCache(long id)
     return account;
 }
 ```
-Из-за смены сигнатуры метода (Изменено возвращаемое значение с Account на ValueTask<Account>)
+Из-за смены сигнатуры метода (Изменено возвращаемое значение с Account на ValueTask< Account >)
 был изменен интерфейс IAccountService (изменено возвращаемое значение метода) и было изменено возвращаемое значение действия GetByInternalId класса AccountController
 
 ```c#
