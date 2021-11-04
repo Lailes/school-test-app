@@ -34,8 +34,6 @@ app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); 
 
 ### 2) TODO 1
 Добавлен параметр userName в RouteAttribute для корректной передачи имени пользователя в действие
-Добавлена генерация аутентификационных куки в метод Login
-
 ```c#
 [HttpPost("sign-in/{userName}")]
 public async Task<IActionResult> Login(string userName)
@@ -44,6 +42,7 @@ public async Task<IActionResult> Login(string userName)
 }
 ```
 
+Добавлена генерация аутентификационных куки в метод Login
 ```c#
 var claims = new List<Claim> {
     new Claim(ClaimTypes.NameIdentifier, account.UserName),
@@ -53,14 +52,14 @@ var claims = new List<Claim> {
 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
 await HttpContext.SignInAsync(claimsPrincipal);
 ```
-Зарегестрирована система аутентификации в методе ConfigureServices в классе Sturtup
 
+Зарегестрирована система аутентификации в методе ConfigureServices в классе Sturtup
 ```c#
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
 ```
-Добавлена аутентификация и авторизация в конвейер обработки запросов
 
+Добавлена аутентификация и авторизация в конвейер обработки запросов
 ```c#
 app.UseAuthentication();
 app.UseAuthorization();
@@ -79,6 +78,7 @@ public async Task<IActionResult> Login(string userName) {
 ```c#
 return NotFound();
 ```
+
 Если поиск вернул пользователя, то после добавление аутентификационных куки возвращаем код 200
 ```c#
 return Ok();
