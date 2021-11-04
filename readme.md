@@ -33,8 +33,16 @@ app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); 
 ```
 
 ### 2) TODO 1
-
+Добавлен параметр userName в RouteAttribute для корректной передачи имени пользователя в действие
 Добавлена генерация аутентификационных куки в метод Login
+
+```c#
+[HttpPost("sign-in/{userName}")]
+public async Task<IActionResult> Login(string userName)
+{
+    ...
+}
+```
 
 ```c#
 var claims = new List<Claim> {
