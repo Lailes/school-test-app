@@ -123,3 +123,66 @@ public IActionResult AccessDenied() => Unauthorized();
 ```
 
 ### 7) TODO 6
+
+Обновлен метод GetFromCache класса AccountService. При отсутвии аккаунта в кэше, метод находит его в базе акаунтов и добавляет его в кэш для последующего использования
+
+```c#
+public async ValueTask<Account> GetFromCache(long id)
+{
+    if (_cache.TryGetValue(id, out var account))
+        return account;
+
+    account = await _db.GetOrCreateAccountAsync(id);
+    _cache.AddOrUpdate(account);
+    
+    return account;
+}
+```
+Из-за смены сигнатуры метода (Изменено возвращаемое значение с Account на ValueTask<Account>)
+был изменен интерфейс IAccountService (изменено возвращаемое значение метода) и было изменено возвращаемое значение действия GetByInternalId класса AccountController
+
+```c#
+public interface IAccountService
+{
+    ValueTask<Account> GetFromCache(long id);
+    ...
+}
+```
+
+```c#
+[Authorize(Roles = "Admin")]
+[HttpGet("{id}")]
+public ValueTask<Account> GetByInternalId([FromRoute] int id)
+{
+    return _accountService.GetFromCache(id);
+}
+```
+
+В ходе поиска причин возникновения копии аккаунта при работе действия Get контроллера AccountController было выяснено, что серия методов "GetOrCreate..." 
+класса AccountDatabaseStub возвращает не объект, а его копию. Из-за чего действие увеличения Counter производится над копией. 
+Для решения данной проблемы надо либо возвращать оригинальный объект, либо сохранять объект (применять изменения) в базе данных
+
+Было принято решение возвращать оригинальный объект, из-за меньшего количества необходимых изменений в коде.
+
+```c#
+public Task<Account> GetOrCreateAccountAsync(string id)
+{
+    ...
+        return Task.FromResult(account);
+    }
+}
+
+public Task<Account> GetOrCreateAccountAsync(long id)
+{
+    ...
+        return Task.FromResult(account);
+    }
+}
+
+public Task<Account> FindByUserNameAsync(string userName)
+{
+    ...
+        return Task.FromResult(account);
+    }
+}
+```

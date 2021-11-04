@@ -32,10 +32,10 @@ namespace WebApp
             return _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
         }
 
-        //TODO 5: Endpoint should works only for users with "Admin" Role
+        //TODO_ 5: Endpoint should works only for users with "Admin" Role
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
-        public Account GetByInternalId([FromRoute] int id)
+        public ValueTask<Account> GetByInternalId([FromRoute] int id)
         {
             return _accountService.GetFromCache(id);
         }

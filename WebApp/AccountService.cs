@@ -13,14 +13,15 @@ namespace WebApp
             _db = db;
         }
 
-        public Account GetFromCache(long id)
+        public async ValueTask<Account> GetFromCache(long id)
         {
             if (_cache.TryGetValue(id, out var account))
-            {
                 return account;
-            }
 
-            return null;
+            account = await _db.GetOrCreateAccountAsync(id);
+            _cache.AddOrUpdate(account);
+            
+            return account;
         }
 
         public async ValueTask<Account> LoadOrCreateAsync(string id)

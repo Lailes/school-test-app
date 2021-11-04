@@ -15,7 +15,7 @@ namespace WebApp
                        .UseStartup<Startup>();
 
         /*
-         * TODO 6: Fix issue
+         * TODO_ 6: Fix issue
          * Users complains that sometimes, when they call AccountController.UpdateAccount followed by
          * AccountController.GetByInternalId they get account with counter equals 0, like if UpdateCounter was never
          * called.
