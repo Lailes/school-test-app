@@ -12,4 +12,14 @@ Now clone this repository and get on with the task. Good luck! ;)
 3. [Asp.Net core Authentication and Authorization](https://docs.microsoft.com/en-us/aspnet/core/security/?view=aspnetcore-3.1). **Important!** You don't really need to use Identity Framework, use cookie authentication without identity instead.
 4. [Asp.Net core Dependency injection](https://metanit.com/sharp/aspnet5/6.1.php)
 
-*Information can be updated at some point of time. In that case you will be notified by email*
+*Information can be updated at some point of time. In that case you will be notified by email
+
+## Solution of TODOes
+
+### 1) TODO 0
+### 2) TODO 1
+### 3) TODO 2
+### 4) TODO 3
+### 5) TODO 4
+### 6) TODO 5
+### 7) TODO 6
