@@ -116,6 +116,10 @@ public IActionResult AccessDenied() => Unauthorized();
 ```
 ### 6) TODO 5
 
+В атрибут Authorize было добавлен параметр Roles с значением "Admin", таким образом действие будет работать только для пользователей с ролью Admin
 
+```c#
+[Authorize(Roles = "Admin")]
+```
 
 ### 7) TODO 6

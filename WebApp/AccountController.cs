@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp
 {
-    // TODO 4: unauthorized users should receive 401 status code
+    // TODO_ 4: unauthorized users should receive 401 status code
     [Route("api/account")]
     public class AccountController : Controller
     {
@@ -33,7 +33,7 @@ namespace WebApp
         }
 
         //TODO 5: Endpoint should works only for users with "Admin" Role
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public Account GetByInternalId([FromRoute] int id)
         {
