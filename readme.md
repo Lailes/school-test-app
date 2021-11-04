@@ -17,6 +17,21 @@ Now clone this repository and get on with the task. Good luck! ;)
 ## Solution of TODOes
 
 ### 1) TODO 0
+Добавлена настройка
+```c#
+services.AddMvc(options => options.EnableEndpointRouting = false);
+```
+
+Добавлен синглтон AccountService, который требуется AccountController
+
+```c#
+services.AddSingleton<IAccountService, AccountService>();
+```
+За ненадобностью была отключена комментарием строка в Configure
+```c#
+app.Run(async (context) => { await context.Response.WriteAsync("Hello World!"); });
+```
+
 ### 2) TODO 1
 ### 3) TODO 2
 ### 4) TODO 3
