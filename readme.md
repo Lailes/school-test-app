@@ -74,12 +74,12 @@ public async Task<IActionResult> Login(string userName) {
 }
 ```
 
-В случае, если в результате поиска пользователя получили null, то возвращает код 404 с помощью метода NotFound()
+В случае, если в результате поиска пользователя получили null, то действие возвращает код 404 с помощью метода NotFound()
 ```c#
 return NotFound();
 ```
 
-Если поиск вернул пользователя, то после добавление аутентификационных куки возвращаем код 200
+Если поиск вернул пользователя, то после добавление аутентификационных куки действие возвращает код 200
 ```c#
 return Ok();
 ```
@@ -88,11 +88,12 @@ return Ok();
 
 Добавлено получение userId из куки.
 Данный метод будет улучшен в дальнейшем
+Данный метод вызывается при авторизованном пользователе, и можно сказать что проверка на null в некотором роде избыточна
 
 ```c#
 [Authorize] 
 [HttpGet]
-public ValueTask<Account> Get()
+public async ValueTask<ActionResult<Account>> Get()
 {
     var userId = User.Claims
         .Where(claim => claim.Type == ClaimTypes.Name)
@@ -100,11 +101,28 @@ public ValueTask<Account> Get()
         .FirstOrDefault();
 
     if (userId == null)
-        return new ValueTask<Account>(result: null);
-    
-    return _accountService.LoadOrCreateAsync(userId /* TODO 3: Get user id from cookie */);
+        return NotFound();
+
+    var account = await _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
+    return new ActionResult<Account>(account);
 }
 ```
+
+Если не делать проверку на userId == null, то код можно упростить до следующего вида:
+```c#
+[Authorize] 
+[HttpGet]
+public async ValueTask<Account> Get()
+{
+    var userId = User.Claims
+        .Where(claim => claim.Type == ClaimTypes.Name)
+        .Select(claim => claim.Value)
+        .First();
+        
+    return await _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
+}
+```
+Однако я посчитал что проверку стоит сделать. Мне кажется что это более "Расширяемо и правильно". В силу неопытности могу ошибаться.
 
 ### 5) TODO 4
 
