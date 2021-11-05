@@ -36,5 +36,8 @@ namespace WebApp
             //TODO_ 2: return 404 if user not found
             return NotFound();
         }
+
+        [HttpGet("denied")]
+        public ActionResult AccessDenied() => Unauthorized();
     }
 }
