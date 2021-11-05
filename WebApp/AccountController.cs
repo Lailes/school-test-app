@@ -50,7 +50,7 @@ namespace WebApp
             if (actionResult.Result != NotFound())
             {
                 var account = actionResult.Value;
-                account.Counter++; 
+                account.Counter++;
                 await _accountService.SaveChanges(account);
             }
         }
