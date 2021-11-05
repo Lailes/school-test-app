@@ -139,6 +139,8 @@ public async ValueTask<Account> Get()
 [HttpGet("denied")]
 public IActionResult AccessDenied() => Unauthorized();
 ```
+Для проверки данной функциональности был написан юниттест TestUnauthorized
+
 ### 6) TODO 5
 
 В атрибут Authorize было добавлен параметр Roles с значением "Admin", таким образом действие будет работать только для пользователей с ролью Admin
@@ -147,6 +149,14 @@ public IActionResult AccessDenied() => Unauthorized();
 [Authorize(Roles = "Admin")]
 ```
 
+При переходе пользователем, не имеющего роль Admin, данное действие совершает переход на адрес, установленный свойством AccessDeniedPath класса CookieAuthenticationOptions
+```c#
+.AddCookie(options => {
+    options.LoginPath = "/api/denied";
+    options.AccessDeniedPath = "/api/denied"; 
+});
+```
+Для проверки данной функциональности был написан юниттест TestAdminUnauthorized
 ### 7) TODO 6
 
 Обновлен метод GetFromCache класса AccountService. При отсутвии аккаунта в кэше, метод находит его в базе акаунтов и добавляет его в кэш для последующего использования

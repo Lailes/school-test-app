@@ -22,6 +22,7 @@ namespace WebApp
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => {
                     options.LoginPath = "/api/denied";
+                    options.AccessDeniedPath = "/api/denied"; 
                 });
         }
 
