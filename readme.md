@@ -231,19 +231,16 @@ public async ValueTask<bool> SaveChanges(Account account)
 }
 ```
 
-Итоговый код действия контроллера:
+Итоговый код метода действия контроллера:
 ```c#
 [Authorize]
 [HttpPost("counter")]
 public async Task UpdateAccount()
 {
     //Update account in cache, don't bother saving to DB, this is not an objective of this task.
-    var actionResult = await Get();
-    if (actionResult.Result != NotFound())
-    {
-        var account = actionResult.Value;
-        account.Counter++; 
-        await _accountService.SaveChanges(account);
-    }
+    var account = await Get();
+    account.Counter++;
+    
+    await _accountService.SaveChanges(account);
 }
 ```
