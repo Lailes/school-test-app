@@ -22,7 +22,7 @@ namespace WebApp
         public async ValueTask<Account> Get()
         {
             var userId = User.Claims
-                .Where(claim => claim.Type == ClaimTypes.Name)
+                .Where(claim => claim.Type == ClaimTypes.NameIdentifier)
                 .Select(claim => claim.Value)
                 .FirstOrDefault();
 

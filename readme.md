@@ -45,11 +45,12 @@ public async Task<IActionResult> Login(string userName)
 Добавлена генерация аутентификационных куки в метод Login
 ```c#
 var claims = new List<Claim> {
-    new Claim(ClaimTypes.NameIdentifier, account.UserName),
+    new Claim(ClaimTypes.NameIdentifier, account.ExternalId),
     new Claim(ClaimTypes.Role, account.Role),
-    new Claim(ClaimTypes.Name, account.ExternalId)
+    new Claim(ClaimTypes.Name, account.UserName)
 };
-var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 await HttpContext.SignInAsync(claimsPrincipal);
 ```
 
@@ -86,43 +87,23 @@ return Ok();
 
 ### 4) TODO 3
 
-Добавлено получение userId из куки.
-Данный метод вызывается при авторизованном пользователе, и можно сказать что проверка на null, в некотором роде, избыточна
-
-```c#
-[Authorize] 
-[HttpGet]
-public async ValueTask<ActionResult<Account>> Get()
-{
-    var userId = User.Claims
-        .Where(claim => claim.Type == ClaimTypes.Name)
-        .Select(claim => claim.Value)
-        .FirstOrDefault();
-
-    if (userId == null)
-        return NotFound();
-
-    var account = await _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
-    return new ActionResult<Account>(account);
-}
-```
-
-Если не делать проверку на userId == null, то код можно упростить до следующего вида:
+Добавлено получение userId из куки при помощи свойства Claims объекта User
 ```c#
 [Authorize] 
 [HttpGet]
 public async ValueTask<Account> Get()
 {
     var userId = User.Claims
-        .Where(claim => claim.Type == ClaimTypes.Name)
+        .Where(claim => claim.Type == ClaimTypes.NameIdentifier)
         .Select(claim => claim.Value)
-        .First();
-        
+        .FirstOrDefault();
+
+    if (userId == null)
+        return null;
+    
     return await _accountService.LoadOrCreateAsync(userId /* TODO_ 3: Get user id from cookie */);
 }
 ```
-Однако я посчитал что проверку стоит сделать. Мне кажется что это более "Расширяемо и правильно". В силу неопытности могу ошибаться.
-
 ### 5) TODO 4
 
 Было выснено, что неавторизованный пользователь, при обращении к защищенному контроллеру или действию, переходит на страницу, устанавливаемую свойством LoginPath. По умолчанию он не установлен, и при переходе выдается 404 Not Found

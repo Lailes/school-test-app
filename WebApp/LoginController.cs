@@ -25,11 +25,12 @@ namespace WebApp
             {
                 //TODO_ 1: Generate auth cookie for user 'userName' with external id
                 var claims = new List<Claim> {
-                    new Claim(ClaimTypes.NameIdentifier, account.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, account.ExternalId),
                     new Claim(ClaimTypes.Role, account.Role),
-                    new Claim(ClaimTypes.Name, account.ExternalId)
+                    new Claim(ClaimTypes.Name, account.UserName)
                 };
-                var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                 await HttpContext.SignInAsync(claimsPrincipal);
                 return Ok();
             }
