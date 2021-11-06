@@ -1,15 +1,14 @@
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
 
 namespace WebApp.Test
 {
-    public class UnauthorizedTest: MyTestBase
+    public class UnauthorizedTest : MyTestBase
     {
-
-
+        
         [Test(Description = "TODO 4")]
+        [Repeat(30)]
         public async Task TestUnauthorized()
         {
             var result = await Client.GetAccountAsync();
@@ -21,6 +20,7 @@ namespace WebApp.Test
         }
         
         [Test(Description = "TODO 5")]
+        [Repeat(30)]
         public async Task TestAdminUnauthorized()
         {
             var result = await BobClient.GetAccountByIdAsync(2);
