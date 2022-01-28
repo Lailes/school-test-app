@@ -8,15 +8,9 @@ namespace WebApp.Test
     {
         public WebAppTestHost WebAppHost { get; }
 
-        public WebAppTestEnvironment()
-        {
-            WebAppHost = new WebAppTestHost();
-        }
+        public WebAppTestEnvironment() => WebAppHost = new WebAppTestHost();
 
-        public void Start()
-        {
-            WebAppHost.Start();
-        }
+        public void Start() => WebAppHost.Start();
 
         public void Prepare()
         {
@@ -24,9 +18,6 @@ namespace WebApp.Test
             WebAppHost.Services.GetRequiredService<IAccountDatabase>().ResetAsync().GetAwaiter().GetResult();
         }
 
-        public void Dispose()
-        {
-            WebAppHost?.Dispose();
-        }
+        public void Dispose() => WebAppHost?.Dispose();
     }
 }

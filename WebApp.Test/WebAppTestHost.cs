@@ -22,9 +22,6 @@ namespace WebApp.Test
 
         public HttpClient GetClient() => _testServer.CreateClient();
 
-        public void Dispose()
-        {
-            _testServer?.Dispose();
-        }
+        public void Dispose() => _testServer?.Dispose();
     }
 }
