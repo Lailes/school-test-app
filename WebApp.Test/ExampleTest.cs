@@ -15,10 +15,8 @@ namespace WebApp.Test
         public async Task Todo6()
         {
             var tasks = new List<Task>();
-            for (var i = 0; i < 200; i++)
-            {
+            for (var i = 0; i < 200; i++) 
                 tasks.Add(new Task(async () => await AliceClient.GetAccountAsync()));
-            }
 
             tasks.AsParallel().ForAll(x => x.Start());
             await Task.WhenAll(tasks);
