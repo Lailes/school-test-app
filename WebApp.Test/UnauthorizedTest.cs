@@ -30,6 +30,5 @@ namespace WebApp.Test
             
             Assert.AreEqual(HttpStatusCode.Unauthorized, result.StatusCode);
         }
-
     }
 }
