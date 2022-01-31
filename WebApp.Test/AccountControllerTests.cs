@@ -5,7 +5,7 @@ namespace WebApp.Test;
 
 public class AccountControllerTests : MyTestBase
 {
-    [Test]
+    [Test (Description = "TODO 3 Test")]
     [TestCase("alice@mailinator.com", 1)]
     public async Task AccountControllerGetTest(string userName, int userIdExpected)
     {
